@@ -4,13 +4,9 @@
 namespace LZI\DnbUrnClient;
 
 
-use Psr\Log\NullLogger;
 use stdClass;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Throwable;
@@ -81,6 +77,14 @@ class UrnClient
     public function setEndpoint($url = '')
     {
         $this->endpoint = $this->apiUrlBase . $url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function getEndpoint()
+    {
+        return $this->endpoint;
     }
 
     /**
