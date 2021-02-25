@@ -1,0 +1,39 @@
+{
+  "authors": [
+    {
+      "name": "Michael Didas",
+      "email": "michael.didas@dagstuhl.de",
+      "role": "developer"
+    },
+    {
+      "name": "Melanie Steffeck",
+      "email": "m.steffeck@gmail.com",
+      "role": "developer"
+    },
+    {
+      "name": "Michael Wagner",
+      "email": "michael.wagner@dagstuhl.de",
+      "role": "developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "LZI\\DnbUrnClient\\": "src/"
+    }
+  },
+  "description": "",
+  "keywords": [
+    "urn",
+    "UrnClient",
+    "dnb"
+  ],
+  "license": "",
+  "name": "lzi/dnb-urn-client",
+  "readme": "",
+  "require": {
+    "php": "^7.0",
+    "symfony/http-client": "*"
+  },
+  "type": "library",
+  "time": "2021-02-25"
+}
