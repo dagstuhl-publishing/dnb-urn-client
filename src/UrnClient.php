@@ -72,6 +72,14 @@ class UrnClient
     }
 
     /**
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        return $this->apiUrlBase;
+    }
+
+    /**
      * @param string $url
      */
     public function setEndpoint($url = '')
