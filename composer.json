@@ -18,22 +18,22 @@
   ],
   "autoload": {
     "psr-4": {
-      "LZI\\DnbUrnClient\\": "src/"
+      "Dagstuhl\\DnbUrnClient\\": "src/"
     }
   },
   "description": "",
   "keywords": [
-    "urn",
-    "UrnClient",
-    "dnb"
+    "DNB",
+    "URN",
+    "API client"
   ],
   "license": "",
-  "name": "lzi/dnb-urn-client",
+  "name": "dagstuhl/dnb-urn-client",
   "readme": "",
   "require": {
     "php": "^8.0",
     "symfony/http-client": "*"
   },
   "type": "library",
-  "time": "2021-02-25"
+  "time": "2024-03-05"
 }

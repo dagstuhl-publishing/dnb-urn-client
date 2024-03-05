@@ -1,7 +1,7 @@
 <?php
 
 
-namespace LZI\DnbUrnClient;
+namespace Dagstuhl\DnbUrnClient;
 
 
 use stdClass;
