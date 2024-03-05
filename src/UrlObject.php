@@ -6,20 +6,18 @@ namespace LZI\DnbUrnClient;
 
 class UrlObject
 {
-    private $url;
-    private $created;
-    private $lastModified;
-    private $urn;
-    private $owner;
-    private $priority;
-    private $self;
+    private string $url;
+    private ?string $created;
+    private ?string $lastModified;
+    private ?string $urn;
+    private ?string $owner;
+    private ?int $priority;
+    private ?string $self;
 
     /**
      * UrlObject constructor.
-     * @param string $url
-     * @param integer|null $priority
      */
-    public function __construct($url, int $priority = NULL)
+    public function __construct(string|object $url, int $priority = NULL)
     {
         if (is_object($url)) {
             // handles api-response url-object
@@ -35,7 +33,9 @@ class UrlObject
             $this->url = $url;
         }
 
-        $this->priority = $priority;
+        if ($priority !== NULL) {
+            $this->priority = $priority;
+        }
     }
 
     /**
@@ -44,7 +44,7 @@ class UrlObject
      * @param string|array $url
      * @return UrlObject|null
      */
-    public static function create($url)
+    public static function create(string|array|self $url): ?static
     {
         if ($url instanceof self) {
             return $url;
@@ -53,8 +53,7 @@ class UrlObject
             return new static($url);
         }
         elseif (isset($url['url'])) {
-            $priority = (isset($url['priority']) ? $url['priority'] : NULL);
-            return new static($url['url'], $priority);
+            return new static($url['url'], $url['priority'] ?? NULL);
         }
         elseif (count($url) === 1) {
             return new static($url[0]);
@@ -78,7 +77,7 @@ class UrlObject
      * @param string|array|UrlObject $urlOrUrls
      * @return UrlObject|UrlObject[]
      */
-    public static function createMany($urlOrUrls)
+    public static function createMany(string|array|self $urlOrUrls): UrlObject|array
     {
         $urlObjs = [];
 
@@ -93,88 +92,75 @@ class UrlObject
         return $urlObjs;
     }
 
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string $str
-     */
-    public function setUrl($str)
+    public function setUrl(string $str): void
     {
         $this->url = $str;
     }
 
-    public function getCreated()
+    public function getCreated(): ?string
     {
         return $this->created;
     }
 
-    public function getLastModified()
+    public function getLastModified(): ?string
     {
         return $this->lastModified;
     }
 
-    public function getUrn()
+    public function getUrn(): ?string
     {
         return $this->urn;
     }
 
-    /**
-     * @param $str
-     */
-    public function setUrn($str)
+    public function setUrn(string $str): void
     {
         $this->urn = $str;
     }
 
-    public function getOwner()
+    public function getOwner(): ?string
     {
         return $this->owner;
     }
 
-    public function getPriority()
+    public function getPriority(): ?int
     {
         return $this->priority;
     }
 
-    /**
-     * @param integer $int
-     */
-    public function setPriority($int)
+    public function setPriority(int $int): void
     {
         $this->priority = $int;
     }
 
-    public function getSelf()
+    public function getSelf(): ?string
     {
         return $this->self;
     }
 
-    /**
-     * @param bool $onlyPrio
-     * @return array
-     */
-    public function getApiData($onlyPrio = false) : array
+    public function getApiData(bool $onlyPriority = false): array
     {
-        if ($onlyPrio) {
+        if ($onlyPriority) {
             return [ 'priority' => $this->priority ];
         }
 
         return [ 'url' => $this->url, 'priority' => $this->priority ];
     }
 
-    public function toJson()
+    public function toJson(): string
     {
         return json_encode([
-                'url' => $this->url,
-                'created' => $this->created,
-                'lastModified' => $this->lastModified,
-                'urn' => $this->urn,
-                'owner' => $this->owner,
-                'priority' => $this->priority,
-                'self' => $this->self
-            ]);
+            'url' => $this->url,
+            'created' => $this->created,
+            'lastModified' => $this->lastModified,
+            'urn' => $this->urn,
+            'owner' => $this->owner,
+            'priority' => $this->priority,
+            'self' => $this->self
+        ]);
     }
 }

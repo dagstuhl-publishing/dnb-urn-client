@@ -22,45 +22,21 @@ class UrnClient
 {
     const ERROR_PREFIX = '!! ERROR ';
 
-    /**
-     * @var string
-     */
-    private $username;
+    private string $username;
 
-    /**
-     * @var string
-     */
-    private $password;
+    private string $password;
 
-    /**
-     * @var string
-     */
-    private $apiUrlBase;
+    private string $apiUrlBase;
 
-    /**
-     * @var string
-     */
-    private $endpoint;
+    private string $endpoint;
 
-    /**
-     * @var HttpClientInterface|NULL
-     */
-    private $httpClient;
+    private HttpClientInterface $httpClient;
 
-    /**
-     * @var ResponseInterface|null
-     */
-    private $response = NULL;
+    private ?ResponseInterface $response = NULL;
 
-    /**
-     * @var int|null
-     */
-    private $status = NULL;
+    private ?int $status = NULL;
 
-    /**
-     * @var Throwable|null
-     */
-    private $exception = NULL;
+    private ?Throwable $exception = NULL;
 
     public function __construct($username = NULL, $password = NULL, $apiUrl = NULL)
     {
@@ -71,55 +47,36 @@ class UrnClient
         $this->httpClient = HttpClient::create();
     }
 
-    /**
-     * @return string
-     */
-    public function getApiUrl()
+    public function getApiUrl(): string
     {
         return $this->apiUrlBase;
     }
 
-    /**
-     * @param string $url
-     */
-    public function setEndpoint($url = '')
+    public function setEndpoint(string $url = ''): void
     {
         $this->endpoint = $this->apiUrlBase . $url;
     }
 
-    /**
-     * @param string $url
-     */
-    public function getEndpoint()
+    public function getEndpoint(): string
     {
         return $this->endpoint;
     }
 
-    /**
-     * @return bool
-     */
-    public function lastRequestFailed()
+    public function lastRequestFailed(): bool
     {
-        return !($this->status >= 200 OR $this->status < 300);
+        return empty($this->status) OR $this->status < 200 OR $this->status >= 300;
     }
 
-    /**
-     * @return ResponseInterface|null
-     */
-    public function getResponse()
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getStatus()
+    public function getStatus(): ?int
     {
         $statusCode = NULL;
 
         if ($this->response instanceof ResponseInterface) {
-
             try {
                 $statusCode = $this->response->getStatusCode();
             } catch (Throwable $ex) { }
@@ -128,18 +85,12 @@ class UrnClient
         return $statusCode;
     }
 
-    /**
-     * @return Throwable
-     */
-    public function getException()
+    public function getException(): ?Throwable
     {
         return $this->exception;
     }
 
-    /**
-     * @return string
-     */
-    public function getErrorMessage()
+    public function getErrorMessage(): string
     {
         if ($this->exception !== NULL) {
             return self::ERROR_PREFIX. $this->exception->getMessage();
@@ -150,10 +101,7 @@ class UrnClient
             : '';
     }
 
-    /**
-     * @return stdClass|null
-     */
-    private function getResponseBody()
+    private function getResponseBody(): ?stdClass
     {
         $responseBody = NULL;
 
@@ -169,11 +117,7 @@ class UrnClient
             : $responseBody;
     }
 
-    /**
-     * @param mixed ...$requestParams
-     * @return stdClass|null
-     */
-    private function makeRequest(...$requestParams)
+    private function makeRequest(...$requestParams): ?stdClass
     {
         $data = NULL;
 
@@ -194,12 +138,7 @@ class UrnClient
         return $data;
     }
 
-
-    /**
-     * @param string|array $urlOrUrls
-     * @return array
-     */
-    public static function getFormattedUrls($urlOrUrls) : array
+    public static function getFormattedUrls(string|array $urlOrUrls): array
     {
         $formattedUrls = [];
 
@@ -223,11 +162,8 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-URNabfragen
-     *
-     * @param string $urn
-     * @return stdClass|null
      */
-    public function getUrnDetails($urn): ?stdClass
+    public function getUrnDetails(string $urn): ?stdClass
     {
         $this->setEndpoint('urns/urn/' . $urn);
 
@@ -247,10 +183,9 @@ class UrnClient
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-URLsaneinerURNabfragen
      *
-     * @param string $urn
      * @return UrlObject[]|null
      */
-    public function getUrls(string $urn, $onlyOwn = false): ?array
+    public function getUrls(string $urn, bool $onlyOwn = false): ?array
     {
         $this->setEndpoint( $onlyOwn ? 'urns/urn/'. $urn .'/my-urls' : 'urns/urn/' . $urn .'/urls' );
 
@@ -280,7 +215,6 @@ class UrnClient
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-EigeneURLsaneinerURNabfragen
      *
-     * @param string $urn
      * @return UrlObject[]|null
      */
     public function getOwnUrls(string $urn): ?array
@@ -291,11 +225,8 @@ class UrnClient
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-EinzelneURLabfragen
      *
-     * @param string $urn
-     * @param UrlObject|string|array $url
-     * @return UrlObject|null
      */
-    public function getUrlDetails(string $urn, $url): ?UrlObject
+    public function getUrlDetails(string $urn, UrlObject|string|array $url): ?UrlObject
     {
         $url = UrlObject::create($url);
         $this->setEndpoint('urns/urn/'. $urn .'/urls/base64/'. base64_encode($url->getUrl()));
@@ -313,12 +244,7 @@ class UrnClient
             : new UrlObject($data);
     }
 
-    /**
-     * @param string $urn
-     * @param UrlObject|string $url
-     * @return bool
-     */
-    public function urlExists(string $urn, $url) : bool
+    public function urlExists(string $urn, UrlObject|string $url): bool
     {
         $urlDetails = $this->getUrlDetails($urn, $url);
 
@@ -331,12 +257,8 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-HinzufügeneinerURLzueinerURN
-     *
-     * @param string $urn
-     * @param string|array|UrlObject $url
-     * @return UrlObject|null
      */
-    public function addUrl(string $urn, $url): ?UrlObject
+    public function addUrl(string $urn, string|array|UrlObject $url): ?UrlObject
     {
         $this->setEndpoint('urns/urn/'. $urn .'/urls');
 
@@ -359,12 +281,8 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-LöscheneinerURLvoneinerURN
-     *
-     * @param string $urn
-     * @param UrlObject|string|array $url
-     * @return bool|stdClass|null
      */
-    public function deleteUrl(string $urn, $url)
+    public function deleteUrl(string $urn, UrlObject|string|array $url): bool|NULL
     {
         $urlObj = UrlObject::create($url);
         $this->setEndpoint('urns/urn/'. $urn .'/urls/base64/'. base64_encode($urlObj->getUrl()));
@@ -388,12 +306,8 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-AustauschenallereigenenURLsaneinerURN
-     *
-     * @param string $urn
-     * @param string|UrlObject|array $urlOrUrls
-     * @return stdClass|bool|null
      */
-    public function exchangeOwnUrls(string $urn, $urlOrUrls)
+    public function exchangeOwnUrls(string $urn, string|UrlObject|array $urlOrUrls): stdClass|bool|NULL
     {
         $this->setEndpoint('urns/urn/' . $urn . '/my-urls');
 
@@ -423,11 +337,8 @@ class UrnClient
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-AbfrageneinesVorschlagsfüreineURN
      *
      * return is of form: { "namespace": (string), "self": (string), "suggestedUrn": (string) }
-     *
-     * @param string $namespace
-     * @return stdClass|null
      */
-    public function getUrnSuggestion($namespace): ?stdClass
+    public function getUrnSuggestion(string $namespace): ?stdClass
     {
         $this->setEndpoint('namespaces/name/'. $namespace .'/urn-suggestion');
 
@@ -475,12 +386,8 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-RegistriereneinerneuenURN
-     *
-     * @param string $urn
-     * @param string|array|UrlObject $urlOrUrls
-     * @return stdClass|null
      */
-    public function registerUrn($urn, $urlOrUrls): ?stdClass
+    public function registerUrn(string $urn, string|array|UrlObject $urlOrUrls): ?stdClass
     {
         $this->setEndpoint('urns');
 
@@ -510,13 +417,8 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-AktualisierenderPrioritäteinerURL
-     *
-     * @param string $urn
-     * @param string|array|UrlObject $url
-     * @param int $priority
-     * @return bool|null
      */
-    public function updatePriority(string $urn, $url, int $priority): ?bool
+    public function updatePriority(string $urn, string|array|UrlObject $url, int $priority): ?bool
     {
         $urlObj = UrlObject::create($url);
         $urlObj->setPriority($priority);
@@ -542,10 +444,6 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-NachfolgereinerURNsetzen
-     *
-     * @param string $oldUrn
-     * @param string $newUrn
-     * @return bool|null
      */
     public function setUrnSuccessor(string $oldUrn, string $newUrn): ?bool
     {
@@ -579,9 +477,6 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-NachfolgereinerURNentfernen
-     *
-     * @param string $originalUrn
-     * @return bool|null
      */
     public function deleteUrnSuccessor(string $originalUrn): ?bool
     {
@@ -608,9 +503,6 @@ class UrnClient
 
     /**
      * reference: https://wiki.dnb.de/display/URNSERVDOK/Beispiele%3A+URN-Verwaltung#Beispiele:URN-Verwaltung-InformationzuNamensraumanzeigen
-     *
-     * @param string|null $namespace
-     * @return stdClass|null
      */
     public function getNamespaceDetails(string $namespace): ?stdClass
     {
