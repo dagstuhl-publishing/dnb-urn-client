@@ -7,12 +7,12 @@ namespace Dagstuhl\DnbUrnClient;
 class UrlObject
 {
     private string $url;
-    private ?string $created;
-    private ?string $lastModified;
-    private ?string $urn;
-    private ?string $owner;
-    private ?int $priority;
-    private ?string $self;
+    private ?string $created = NULL;
+    private ?string $lastModified = NULL;
+    private ?string $urn = NULL;
+    private ?string $owner = NULL;
+    private ?int $priority = NULL;
+    private ?string $self = NULL;
 
     /**
      * UrlObject constructor.
