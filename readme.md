@@ -1,6 +1,6 @@
 # The Dagstuhl DNB URN-API client
 
-An API client for registering/resolving urn data at DNB.
+An API client for registering/resolving urn data at DNB, cp. https://wiki.dnb.de/display/URNSERVDOK/URN-Service+API
 
 ### Code Examples:
 

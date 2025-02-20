@@ -40,9 +40,6 @@ class UrlObject
 
     /**
      * returns an instance of UrlObject, no matter if given an urlObject-instance, a string, or an array
-     *
-     * @param string|array $url
-     * @return UrlObject|null
      */
     public static function create(string|array|self $url): ?static
     {

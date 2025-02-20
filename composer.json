@@ -21,18 +21,18 @@
       "Dagstuhl\\DnbUrnClient\\": "src/"
     }
   },
-  "description": "",
+  "description": "An API client for the URN service of DNB (Deutsche Nationalbibliothek), developed and used by Dagstuhl Publishing.",
   "keywords": [
     "DNB",
     "URN",
-    "API client"
+    "persistent identifier"
   ],
-  "license": "",
+  "license": "MIT license",
   "name": "dagstuhl/dnb-urn-client",
   "readme": "",
   "require": {
     "php": "^8.0",
-    "symfony/http-client": "*"
+    "symfony/http-client": "^7.1.8"
   },
   "type": "library",
   "time": "2024-03-05"
